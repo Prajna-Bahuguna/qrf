@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #007bff;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        input[type="file"] {
+            padding: 10px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        img {
+            margin-top: 20px;
+            max-width: 300px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        p.error {
+            color: red;
+            font-style: italic;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>QR Code Generator</h1>
+
+    <form method="post" action="/" enctype="multipart/form-data">
+        <label for="file">Upload a File:</label>
+        <input type="file" id="file" name="file" accept=".txt, .csv, .jpg, .jpeg, .png" required>
+        <button type="submit">Generate QR Code</button>
+    </form>
+
+    {% if qr_img %}
+        <h2>Generated QR Code:</h2>
+        <img src="data:image/png;base64,{{ qr_img }}" alt="QR Code">
+    {% endif %}
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+</body>
+</html>
