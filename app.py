@@ -2,23 +2,28 @@ from flask import Flask, render_template, request
 import qrcode
 import base64
 from io import BytesIO
+from PIL import Image
 
 app = Flask(__name__)
 
 def generate_qr_code_from_text(text):
-    # Generate QR code
+    # Generate QR code image using qrcode library
     qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
     qr.add_data(text)
     qr.make(fit=True)
     qr_img = qr.make_image(fill_color="black", back_color="white")
 
-    # Save QR code to BytesIO object and encode to Base64
-    qr_bytes = BytesIO()
-    qr_img.save(qr_bytes, format='PNG')
-    qr_bytes.seek(0)
-    qr_b64 = base64.b64encode(qr_bytes.getvalue()).decode('utf-8')
-    
-    return qr_b64
+    # Convert QR code image to PIL Image
+    img_pil = qr_img.get_image()
+
+    # Create BytesIO object to hold image data
+    img_bytesio = BytesIO()
+    img_pil.save(img_bytesio, format='PNG')  # Save PIL Image to BytesIO as PNG
+
+    # Encode image data as base64 string
+    img_b64 = base64.b64encode(img_bytesio.getvalue()).decode('utf-8')
+
+    return img_b64
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -43,4 +48,4 @@ def home():
     return render_template('index.html', qr_img=qr_img, error=error)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
